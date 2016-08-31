@@ -31,20 +31,22 @@
 	render: function(data){
 		var text = '';
 		$.each(data, function (i, item) {
-			var room = item.coordinator.roomName;
-			var state = item.coordinator.state.zoneState;
-			var artist = item.coordinator.state.currentTrack.artist;
-			var track = item.coordinator.state.currentTrack.title;
-			var cover = item.coordinator.state.currentTrack.absoluteAlbumArtURI;
-			var streamInfo = item.coordinator.state.currentTrack.streamInfo;
-			if(item.members.length > 1){
-				room = '';
-				$.each(item.members, function (j, member) {
-					room += member.roomName + ', ';
-				});
-				room = room.slice(0, -2);
+			if(this.config.exclude.indexOf(item.coordinator.roomName) === -1){
+				var room = item.coordinator.roomName;
+				var state = item.coordinator.state.zoneState;
+				var artist = item.coordinator.state.currentTrack.artist;
+				var track = item.coordinator.state.currentTrack.title;
+				var cover = item.coordinator.state.currentTrack.absoluteAlbumArtURI;
+				var streamInfo = item.coordinator.state.currentTrack.streamInfo;
+				if(item.members.length > 1){
+					room = '';
+					$.each(item.members, function (j, member) {
+						room += member.roomName + ', ';
+					});
+					room = room.slice(0, -2);
+				}
+				text += this.renderRoom(state, artist, track, cover, room);
 			}
-			text += this.renderRoom(state, artist, track, cover, room);
 		}.bind(this));
 		this.loaded = true;
 		// only update dom if content changed
